@@ -1,146 +1,524 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>我的個人介紹</title>
+  <meta name="description" content="前端開發者｜設計愛好者——個人簡介、作品集與聯絡方式" />
+  <meta property="og:title" content="我的個人介紹" />
+  <meta property="og:description" content="前端開發者｜設計愛好者——個人簡介、作品集與聯絡方式" />
+  <meta property="og:type" content="website" />
   <style>
+    /* ========= 基底設定 ========= */
+    :root {
+      --bg: #e4e4ff;
+      --card: #ffffff;
+      --text: #565656;
+      --muted: #7a7a7a;
+      --accent: #6666ff;
+      --accent-2: #4b4bff;
+      --header: #565656;
+      --chip: #f2f2ff;
+      --shadow: 0 4px 15px rgba(86, 86, 86, 0.2);
+      --radius: 16px;
+      --speed: 180ms;
+    }
+    [data-theme="dark"] {
+      --bg: #0f1220;
+      --card: #171a2b;
+      --text: #e5e7eb;
+      --muted: #a3a7b7;
+      --accent: #7a7aff;
+      --accent-2: #9aa0ff;
+      --header: #0b0e1a;
+      --chip: #1e2238;
+      --shadow: 0 8px 24px rgba(0,0,0,0.45);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      html { scroll-behavior: smooth; }
+    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Noto Sans TC", sans-serif;
-      background-color: #e4e4FF;
-      color: #565656;
+      font-family: system-ui, -apple-system, "Noto Sans TC", Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
 
-    /* ----- 導覽列 ----- */
+    /* ========= 頂部導覽 ========= */
     header {
-      background-color: #565656;
-      color: white;
-      display: flex;
-      justify-content: center;
-      padding: 15px 0;
+      position: sticky; top: 0; z-index: 50;
+      background: var(--header);
+      color: #fff;
+      box-shadow: var(--shadow);
     }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 20px;
-      font-weight: bold;
-      transition: color 0.3s;
-      cursor: pointer;
+    .nav {
+      max-width: 1000px; margin: 0 auto; padding: 12px 20px;
+      display: flex; align-items: center; gap: 12px; justify-content: space-between;
     }
-
-    nav a:hover {
-      color: #e4e4FF;
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .5px; }
+    .brand svg { width: 26px; height: 26px; }
+    .links { display: flex; gap: 16px; align-items: center; }
+    .links button,
+    .links a {
+      background: transparent; border: 0; color: #fff; font-weight: 700; cursor: pointer; padding: 8px 10px; border-radius: 10px; transition: background var(--speed) ease, color var(--speed) ease;
     }
+    .links a.active { background: rgba(255,255,255,.16); }
+    .links a:hover, .links button:hover { color: #e4e4ff; }
 
-    /* ----- 區塊通用樣式 ----- */
+    .utilities { display: flex; gap: 8px; align-items: center; }
+    .icon-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.06); color: #fff; cursor: pointer; transition: transform var(--speed) ease, background var(--speed) ease; }
+    .icon-btn:active { transform: scale(0.98); }
+    .icon-btn svg { width: 18px; height: 18px; }
+
+    /* ========= 區塊容器 ========= */
+    main { padding: 28px 20px 80px; }
     section {
       display: none;
-      max-width: 800px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(86, 86, 86, 0.2);
-      padding: 40px;
-      text-align: center;
-      animation: fadeIn 0.5s ease;
+      max-width: 1000px; margin: 28px auto; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; animation: fade .35s ease;
     }
+    section.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px)} to { opacity: 1; transform: translateY(0)} }
+    h1 { margin: 0 0 6px; font-size: clamp(24px, 3vw, 32px) }
+    h2 { margin: 8px 0 16px; font-weight: 600; color: var(--muted) }
+    p { line-height: 1.8; }
 
-    section.active {
-      display: block;
+    /* ========= 關於我 ========= */
+    .about-top { display: grid; grid-template-columns: 120px 1fr; gap: 20px; align-items: center; }
+    .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .chip { background: var(--chip); color: var(--text); padding: 6px 10px; border-radius: 999px; font-size: 14px; border: 1px solid rgba(0,0,0,.06); }
+
+    .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 22px; }
+    .skill { padding: 14px; border-radius: 12px; background: linear-gradient(180deg, var(--chip), transparent); border: 1px solid rgba(0,0,0,.06); }
+    .bar { height: 10px; background: rgba(0,0,0,.08); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+    .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: var(--w, 50%); }
+
+    .timeline { margin-top: 28px; display: grid; gap: 14px; }
+    .tl-item { display: grid; grid-template-columns: 120px 1fr; gap: 14px; align-items: start; }
+    .tl-time { font-weight: 800; color: var(--accent); }
+    .tl-card { background: var(--chip); border-radius: 12px; padding: 12px 14px; border: 1px solid rgba(0,0,0,.06); }
+
+    /* ========= 作品集 ========= */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+    .search { flex: 1 1 220px; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(0,0,0,.1); background: var(--chip); padding: 8px 10px; border-radius: 10px; }
+    .search input { flex: 1; background: transparent; border: 0; outline: none; color: var(--text); }
+    .filter { display: flex; gap: 8px; }
+    .filter button { padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,.1); background: var(--chip); cursor: pointer; }
+    .filter button.active { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .card { position: relative; border: 1px solid rgba(0,0,0,.06); background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); transition: transform var(--speed) ease, box-shadow var(--speed) ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.15); }
+    .card img { width: 100%; height: 150px; object-fit: cover; background: #ddd; }
+    .card .body { padding: 12px 14px; }
+    .tagline { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .tag { font-size: 12px; padding: 4px 8px; background: var(--chip); border-radius: 999px; border: 1px solid rgba(0,0,0,.06); }
+    .card .actions { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid rgba(0,0,0,.06); }
+    .btn { display: inline-flex; gap: 6px; align-items: center; border: 1px solid rgba(0,0,0,.1); background: var(--chip); padding: 8px 12px; border-radius: 10px; cursor: pointer; }
+
+    /* ========= Modal ========= */
+    .modal { position: fixed; inset: 0; display: none; place-items: center; background: rgba(0,0,0,.5); backdrop-filter: blur(2px); z-index: 60; }
+    .modal.show { display: grid; }
+    .modal .panel { width: min(840px, 92vw); background: var(--card); color: var(--text); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+    .panel header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--chip); color: var(--text); }
+    .panel .content { padding: 16px; display: grid; gap: 10px; }
+    .close { background: transparent; border: 0; color: inherit; cursor: pointer; font-size: 20px; }
+
+    /* ========= 聯絡我 ========= */
+    form { display: grid; gap: 12px; max-width: 720px; margin-inline: auto; }
+    .row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    label { font-weight: 700; }
+    input[type="text"], input[type="email"], textarea {
+      padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,.1); background: var(--chip); color: var(--text);
     }
+    textarea { min-height: 120px; resize: vertical; }
+    .form-actions { display: flex; gap: 10px; align-items: center; }
+    .primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; border: 0; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .social-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .social-links a { padding: 8px 12px; border-radius: 10px; background: var(--chip); border: 1px solid rgba(0,0,0,.1); }
 
-    h1 {
-      margin-bottom: 10px;
-    }
+    /* ========= 浮動工具 ========= */
+    .floating { position: fixed; right: 16px; bottom: 16px; display: grid; gap: 10px; z-index: 70; }
+    .to-top { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--accent); color: #fff; box-shadow: var(--shadow); cursor: pointer; }
 
-    p {
-      line-height: 1.6;
-    }
+    /* ========= 提示 ========= */
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: #111c; color: #fff; padding: 10px 14px; border-radius: 10px; opacity: 0; transition: opacity .25s ease, transform .25s ease; z-index: 100; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ----- 頭像 ----- */
-    .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #e4e4FF;
-      margin-bottom: 20px;
-    }
-
-    .social-links a {
-      display: inline-block;
-      margin: 10px;
-      background: #565656;
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: background 0.3s;
-    }
-
-    .social-links a:hover {
-      background: #444;
+    /* ========= RWD ========= */
+    @media (max-width: 640px) {
+      .about-top { grid-template-columns: 1fr; text-align: center; }
+      .tl-item { grid-template-columns: 1fr; }
+      .links { gap: 8px; }
+      .icon-btn { padding: 8px; }
     }
   </style>
 </head>
 <body>
-
   <header>
-    <nav>
-      <a onclick="showSection('about')">關於我</a>
-      <a onclick="showSection('works')">作品集</a>
-      <a onclick="showSection('contact')">聯絡我</a>
-    </nav>
+    <div class="nav" role="navigation" aria-label="主選單">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2l2.39 4.84 5.34.78-3.86 3.76.91 5.31L12 14.77 6.22 16.69l.91-5.31L3.27 7.62l5.34-.78L12 2z" stroke="white" stroke-width="1.5"/></svg>
+        <span id="brandText">你的名字</span>
+      </div>
+      <div class="links" id="navLinks">
+        <a href="#about" data-section="about" class="active">關於我</a>
+        <a href="#works" data-section="works">作品集</a>
+        <a href="#contact" data-section="contact">聯絡我</a>
+      </div>
+      <div class="utilities">
+        <button class="icon-btn" id="langToggle" title="語言切換 (Zh/En)" aria-label="語言切換">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+          <span>中文</span>
+        </button>
+        <button class="icon-btn" id="themeToggle" title="切換主題 (T)" aria-label="切換主題">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 3a9 9 0 109 9 7 7 0 01-9-9z"/></svg>
+          <span>主題</span>
+        </button>
+        <button class="icon-btn" id="downloadCV" title="下載履歷" aria-label="下載履歷">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 15v4a2 2 0 002 2h10a2 2 0 002-2v-4"/></svg>
+          <span>履歷</span>
+        </button>
+      </div>
+    </div>
   </header>
 
-  <!-- 關於我 -->
-  <section id="about" class="active">
-    <img src="https://via.placeholder.com/120" alt="頭像" class="avatar">
-    <h1>你的名字</h1>
-    <h2>前端開發者 | 設計愛好者</h2>
-    <p>
-      嗨！我是熱愛設計與網頁開發的創作者，擅長使用 HTML、CSS、JavaScript 打造流暢的互動體驗。
-      我喜歡結合設計與程式，讓使用者感受到簡潔又有溫度的介面。
-    </p>
-  </section>
+  <main>
+    <!-- 關於我 -->
+    <section id="about" class="active" aria-labelledby="h-about">
+      <div class="about-top">
+        <img src="https://picsum.photos/seed/me/240/240" alt="頭像" class="avatar" loading="lazy" />
+        <div>
+          <h1 id="h-about">你的名字</h1>
+          <h2 id="subtitle">前端開發者｜設計愛好者</h2>
+          <p id="intro">
+            嗨！我是熱愛設計與網頁開發的創作者，擅長使用 HTML、CSS、JavaScript 打造流暢的互動體驗。我喜歡結合設計與程式，讓使用者感受到簡潔又有溫度的介面。
+          </p>
+          <div class="chips" id="chips">
+            <span class="chip">#前端</span>
+            <span class="chip">#UI/UX</span>
+            <span class="chip">#可存取性</span>
+            <span class="chip">#RWD</span>
+          </div>
+        </div>
+      </div>
 
-  <!-- 作品集 -->
-  <section id="works">
-    <h1>作品集</h1>
-    <p>這裡可以放上你的網頁作品、設計作品或專案連結。</p>
-    <div class="social-links">
-      <a href="#">作品 1</a>
-      <a href="#">作品 2</a>
-      <a href="#">作品 3</a>
-    </div>
-  </section>
+      <div class="skills" aria-label="技能長條">
+        <div class="skill"><strong>HTML / CSS</strong> <div class="bar"><span style="--w:92%"></span></div></div>
+        <div class="skill"><strong>JavaScript</strong> <div class="bar"><span style="--w:85%"></span></div></div>
+        <div class="skill"><strong>UI 設計</strong> <div class="bar"><span style="--w:78%"></span></div></div>
+        <div class="skill"><strong>可存取性</strong> <div class="bar"><span style="--w:70%"></span></div></div>
+      </div>
 
-  <!-- 聯絡我 -->
-  <section id="contact">
-    <h1>聯絡我</h1>
-    <p>想合作或聊天？歡迎透過以下方式與我聯絡！</p>
-    <div class="social-links">
-      <a href="#">Email</a>
-      <a href="#">LinkedIn</a>
-      <a href="#">GitHub</a>
+      <div class="timeline" aria-label="經歷時間軸">
+        <div class="tl-item">
+          <div class="tl-time">2024—Now</div>
+          <div class="tl-card"><strong>自由接案</strong>｜企業形象官網、Landing Page、設計系統維護</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">2023</div>
+          <div class="tl-card"><strong>前端實習生</strong>｜切版、元件化、E2E 測試初探</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 作品集 -->
+    <section id="works" aria-labelledby="h-works">
+      <h1 id="h-works">作品集</h1>
+      <div class="toolbar">
+        <div class="search" role="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-3.5-3.5"/></svg>
+          <input id="searchInput" type="text" placeholder="搜尋關鍵字 / 按 / 聚焦" aria-label="搜尋作品" />
+        </div>
+        <div class="filter" role="tablist" aria-label="作品類型篩選">
+          <button class="active" data-filter="all" role="tab" aria-selected="true">全部</button>
+          <button data-filter="web" role="tab">Web</button>
+          <button data-filter="ui" role="tab">UI</button>
+          <button data-filter="app" role="tab">App</button>
+        </div>
+      </div>
+
+      <div class="grid" id="workGrid" aria-live="polite"></div>
+    </section>
+
+    <!-- 聯絡我 -->
+    <section id="contact" aria-labelledby="h-contact">
+      <h1 id="h-contact">聯絡我</h1>
+      <p id="contactText">想合作或聊天？歡迎透過以下方式與我聯絡！</p>
+      <div class="social-links">
+        <a href="mailto:hello@example.com" id="emailLink">Email</a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <button class="btn" id="copyEmail" aria-label="複製 Email">複製 Email</button>
+      </div>
+
+      <hr style="margin:18px 0; border: none; border-top: 1px solid rgba(0,0,0,.1)" />
+
+      <form id="contactForm" novalidate>
+        <div class="row">
+          <div>
+            <label for="name">姓名 *</label>
+            <input type="text" id="name" name="name" placeholder="請輸入姓名" required />
+          </div>
+          <div>
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+        </div>
+        <div>
+          <label for="message">訊息 *</label>
+          <textarea id="message" name="message" placeholder="想合作的專案、時間與需求…" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">送出</button>
+          <button type="reset" class="btn" id="clearDraft">清除草稿</button>
+        </div>
+        <small id="formHelp" style="color:var(--muted);">表單不會真的寄出，僅示範驗證/儲存草稿。</small>
+      </form>
+    </section>
+  </main>
+
+  <!-- 作品詳情 Modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="panel" role="document">
+      <header>
+        <strong id="modalTitle">作品標題</strong>
+        <button class="close" id="modalClose" aria-label="關閉">×</button>
+      </header>
+      <div class="content" id="modalContent"></div>
     </div>
-  </section>
+  </div>
+
+  <!-- 浮動工具 -->
+  <div class="floating">
+    <button class="to-top" id="toTop" title="回到頂部" aria-label="回到頂部">↑</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    function showSection(id) {
-      document.querySelectorAll('section').forEach(sec => {
-        sec.classList.remove('active');
-      });
-      document.getElementById(id).classList.add('active');
-    }
-  </script>
+    // ========= 簡易 i18n =========
+    const i18n = {
+      zh: {
+        brand: '你的名字', subtitle: '前端開發者｜設計愛好者',
+        intro: '嗨！我是熱愛設計與網頁開發的創作者，擅長使用 HTML、CSS、JavaScript 打造流暢的互動體驗。我喜歡結合設計與程式，讓使用者感受到簡潔又有溫度的介面。',
+        nav: ['關於我','作品集','聯絡我'],
+        contactText: '想合作或聊天？歡迎透過以下方式與我聯絡！',
+        searchPH: '搜尋關鍵字 / 按 / 聚焦',
+        copied: '已複製到剪貼簿',
+        formOK: '表單驗證通過（僅示範）',
+        formNG: '請完整填寫必填欄位',
+      },
+      en: {
+        brand: 'Your Name', subtitle: 'Front-end Dev｜Design Enthusiast',
+        intro: "Hi! I'm a creator who loves design and web development. I build smooth interactions with HTML, CSS, and JavaScript, crafting clean and warm interfaces.",
+        nav: ['About','Works','Contact'],
+        contactText: 'Want to collaborate or chat? Reach me via the links below!',
+        searchPH: 'Search keywords / Press / to focus',
+        copied: 'Copied to clipboard',
+        formOK: 'Form validated (demo only)',
+        formNG: 'Please fill in all required fields',
+      }
+    };
 
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+    const toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1600); };
+
+    // ========= 主題切換（保存偏好） =========
+    const THEME_KEY = 'site-theme';
+    const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(THEME_KEY, theme); };
+    const initTheme = () => { const saved = localStorage.getItem(THEME_KEY); if (saved) setTheme(saved); };
+
+    // ========= 導航與路由 =========
+    function activateSection(id) {
+      $$('main section').forEach(s=>s.classList.remove('active'));
+      const target = document.getElementById(id) || $('#about');
+      target.classList.add('active');
+      $$('#navLinks a').forEach(a=>a.classList.toggle('active', a.dataset.section===id));
+      history.replaceState(null, '', `#${id}`);
+    }
+
+    // ========= 快捷鍵 =========
+    function setupShortcuts() {
+      window.addEventListener('keydown', (e)=>{
+        if (e.key === '/') { e.preventDefault(); $('#searchInput')?.focus(); }
+        if (e.key.toLowerCase() === 't') { e.preventDefault(); toggleTheme(); }
+        if (e.key === '1') activateSection('about');
+        if (e.key === '2') activateSection('works');
+        if (e.key === '3') activateSection('contact');
+      });
+    }
+
+    // ========= 語言切換 =========
+    let lang = localStorage.getItem('lang') || 'zh';
+    function applyLang() {
+      const L = i18n[lang];
+      $('#brandText').textContent = L.brand;
+      $('#subtitle').textContent = L.subtitle;
+      $('#intro').textContent = L.intro;
+      $('#contactText').textContent = L.contactText;
+      $('#searchInput').placeholder = L.searchPH;
+      const navs = $$('#navLinks a');
+      [navs[0], navs[1], navs[2]].forEach((el, i)=> el.textContent = L.nav[i]);
+      $('#langToggle span').textContent = (lang==='zh'?'中文':'EN');
+    }
+
+    function toggleLang() { lang = (lang==='zh'?'en':'zh'); localStorage.setItem('lang', lang); applyLang(); }
+
+    // ========= 作品資料 =========
+    const works = [
+      { id: 'w1', title: 'Landing Page 動態切版', type: 'web', cover: 'https://picsum.photos/seed/landing/800/600', tags: ['RWD','Animation'], desc: '以原生 CSS + JS 打造流暢滾動與元件化結構。', link: '#' },
+      { id: 'w2', title: '設計系統 Tokens', type: 'ui', cover: 'https://picsum.photos/seed/design/800/600', tags: ['Design System','Figma'], desc: '整理色彩、字體、間距等基礎 Tokens，提升跨專案一致性。', link: '#' },
+      { id: 'w3', title: '記帳 App 原型', type: 'app', cover: 'https://picsum.photos/seed/app/800/600', tags: ['Prototype','UX'], desc: '以任務流程導向設計，簡化輸入體驗。', link: '#' },
+      { id: 'w4', title: '可存取性優化專案', type: 'web', cover: 'https://picsum.photos/seed/a11y/800/600', tags: ['A11y','WAI-ARIA'], desc: '對既有網站進行鍵盤操作與螢幕報讀優化。', link: '#' },
+      { id: 'w5', title: '行銷活動頁', type: 'web', cover: 'https://picsum.photos/seed/campaign/800/600', tags: ['SEO','Performance'], desc: '關鍵渲染路徑調整、LCP 優化、結構化資料。', link: '#' },
+    ];
+
+    function renderWorks(list=works) {
+      const grid = $('#workGrid');
+      grid.innerHTML = '';
+      list.forEach(w=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.dataset.type = w.type;
+        card.innerHTML = `
+          <img src="${w.cover}" alt="${w.title}" loading="lazy" />
+          <div class="body">
+            <strong>${w.title}</strong>
+            <div class="tagline">${w.tags.map(t=>`<span class='tag'>${t}</span>`).join('')}</div>
+            <p style="margin:8px 0 0; color: var(--muted);">${w.desc}</p>
+          </div>
+          <div class="actions">
+            <button class="btn" data-view="${w.id}">預覽</button>
+            <a class="btn" href="${w.link}">前往</a>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    // 篩選 + 搜尋
+    function setupFiltering() {
+      const filterBtns = $$('.filter button');
+      const input = $('#searchInput');
+      let current = 'all';
+      filterBtns.forEach(btn=>btn.addEventListener('click', ()=>{
+        filterBtns.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        current = btn.dataset.filter;
+        doFilter();
+      }));
+      input.addEventListener('input', doFilter);
+      function doFilter(){
+        const kw = input.value.toLowerCase().trim();
+        const result = works.filter(w=> (current==='all'||w.type===current) && `${w.title} ${w.tags.join(' ')} ${w.desc}`.toLowerCase().includes(kw));
+        renderWorks(result);
+      }
+    }
+
+    // 詳情 Modal
+    function setupModal() {
+      const modal = $('#modal');
+      const closeBtn = $('#modalClose');
+      closeBtn.addEventListener('click', ()=>hide());
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) hide(); });
+      document.addEventListener('click', (e)=>{
+        const btn = e.target.closest('[data-view]');
+        if (!btn) return;
+        const item = works.find(w=>w.id===btn.dataset.view);
+        if (!item) return;
+        $('#modalTitle').textContent = item.title;
+        $('#modalContent').innerHTML = `
+          <img src="${item.cover}" alt="${item.title}" style="border-radius:12px;"/>
+          <p>${item.desc}</p>
+          <div class="tagline">${item.tags.map(t=>`<span class='tag'>${t}</span>`).join('')}</div>
+        `;
+        show();
+      });
+      function show(){ modal.classList.add('show'); modal.setAttribute('aria-hidden','false'); }
+      function hide(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+    }
+
+    // 聯絡表單：驗證 + 草稿保存
+    function setupForm() {
+      const form = $('#contactForm');
+      const help = $('#formHelp');
+      const DRAFT_KEY = 'contact-draft';
+      // 載入草稿
+      const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || '{}');
+      if (draft.name) $('#name').value = draft.name;
+      if (draft.email) $('#email').value = draft.email;
+      if (draft.message) $('#message').value = draft.message;
+      // 即時儲存
+      form.addEventListener('input', ()=>{
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          name: $('#name').value.trim(),
+          email: $('#email').value.trim(),
+          message: $('#message').value.trim(),
+        }));
+      });
+      // 驗證
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const ok = form.checkValidity();
+        if (!ok) { toast(i18n[lang].formNG); form.reportValidity(); return; }
+        toast(i18n[lang].formOK);
+      });
+      // 清除草稿
+      $('#clearDraft').addEventListener('click', ()=>{ localStorage.removeItem(DRAFT_KEY); toast('草稿已清除'); });
+    }
+
+    // 其他工具
+    function setupUtils(){
+      $('#copyEmail').addEventListener('click', async ()=>{
+        await navigator.clipboard.writeText('hello@example.com');
+        toast(i18n[lang].copied);
+      });
+      $('#toTop').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+      $('#downloadCV').addEventListener('click', ()=>{
+        const content = `# 履歷\n\n姓名：你的名字\n職稱：前端開發者\nEmail：hello@example.com\n技能：HTML/CSS/JS, RWD, A11y\n\n經歷：\n- 2024—  自由接案\n- 2023    前端實習生`;
+        const blob = new Blob([content], {type:'text/markdown'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'CV.md'; a.click(); URL.revokeObjectURL(url);
+      });
+    }
+
+    // 主題切換
+    function toggleTheme(){
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    // 事件綁定
+    function bindEvents(){
+      // 導覽點擊
+      $$('#navLinks a').forEach(a=> a.addEventListener('click', (e)=>{ e.preventDefault(); activateSection(a.dataset.section); }));
+      // 初始哈希
+      if (location.hash) activateSection(location.hash.slice(1));
+      // 語言切換
+      $('#langToggle').addEventListener('click', toggleLang);
+      // 主題切換
+      $('#themeToggle').addEventListener('click', toggleTheme);
+    }
+
+    // 初始化
+    (function init(){
+      initTheme();
+      applyLang();
+      renderWorks();
+      setupFiltering();
+      setupModal();
+      setupForm();
+      setupUtils();
+      bindEvents();
+      setupShortcuts();
+    })();
+  </script>
 </body>
 </html>
